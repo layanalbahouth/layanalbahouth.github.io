@@ -15,47 +15,140 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;
+:root{--bg:#F2F0EC;--card:#FBFAF7;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;--term:#1C1B19;--termtx:#ECE8E0;
 --head:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--card:#1E1C19;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#2A2723;--term:#0E0D0C;--termtx:#ECE8E0;color-scheme:dark}}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 var(--body)}
-main,header,footer{max-width:42rem;margin:0 auto;padding:0 1.25rem}
-nav{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;padding:1.3rem 0;font:600 .95rem var(--body)}
-nav a{text-decoration:none;color:var(--mute)}
-nav a:hover{color:var(--ink)}
+.wrap{max-width:60rem;margin:0 auto;padding:0 1.25rem}
 a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}
 a:hover{text-decoration-thickness:2px}
-a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
-h1,h2,h3{font-family:var(--head);line-height:1.1;margin:0;font-weight:600}
-h1{font-size:clamp(3.1rem,14vw,5.6rem);font-weight:500;letter-spacing:-.01em}
-.sub{font:italic 500 clamp(1.5rem,6vw,2rem)/1.2 var(--head);color:var(--mute);margin:.5rem 0 1.4rem}
-.lede{max-width:34rem;margin:0 0 2rem}
-.link{display:block;width:100%;max-width:34rem;height:auto;margin:0 0 3rem}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--head);line-height:1.08;margin:0;font-weight:600}
+.amp{font-family:var(--body);font-style:normal;font-weight:400;font-size:.82em}
+code{font:.88em var(--mono);background:var(--code);padding:.1em .35em;border-radius:4px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.7rem;padding-bottom:.7rem}
+.mono{display:inline-grid;place-items:center;width:2.6rem;height:2.6rem;border:1.5px solid var(--ink);border-radius:50%;font:600 1.15rem var(--head);text-decoration:none;letter-spacing:.02em}
+nav{display:flex;flex-wrap:wrap;gap:.2rem 1.3rem;font:600 .92rem var(--body)}
+nav a{text-decoration:none;color:var(--mute)}
+nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid;gap:2.5rem;padding:4rem 0 1rem;align-items:center}
+@media (min-width:820px){.hero{grid-template-columns:1.15fr .85fr}}
+.kicker{font:600 .8rem var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 .8rem}
+h1{font-size:clamp(3.2rem,11vw,5.8rem);font-weight:500;letter-spacing:-.01em}
+.sub{font:italic 500 clamp(1.5rem,5vw,2.1rem)/1.2 var(--head);color:var(--mute);margin:.6rem 0 1.3rem}
+.lede{max-width:32rem;margin:0}
+.term{background:var(--term);color:var(--termtx);border-radius:14px;box-shadow:0 18px 40px -22px rgba(0,0,0,.55);overflow:hidden;transform:rotate(1.2deg)}
+.term .bar{display:flex;gap:.4rem;padding:.7rem .9rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.term .bar i{width:.65rem;height:.65rem;border-radius:50%;background:rgba(255,255,255,.22)}
+.term pre{margin:0;padding:1.1rem 1.2rem 1.3rem;font:.9rem/1.75 var(--mono);white-space:pre-wrap}
+.term .p{opacity:.55}
+.term .ok{color:#C9B99A}
+.caret{display:inline-block;width:.55em;height:1.05em;background:var(--termtx);vertical-align:-.15em;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.link{display:block;width:100%;height:auto;margin:2.5rem 0 1rem}
 .link .dash{stroke:var(--line);stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round}
-.link .n{fill:none;stroke:var(--ink);stroke-width:2}
+.link .n{fill:var(--bg);stroke:var(--ink);stroke-width:2}
 .link .t{font:italic 500 20px var(--head);fill:var(--ink);text-anchor:middle}
 .pkt{fill:var(--ink);animation:hop 5s ease-in-out infinite}
 @keyframes hop{0%,100%{transform:translateX(100px)}50%{transform:translateX(480px)}}
-@media (prefers-reduced-motion:reduce){.pkt{animation:none;transform:translateX(290px)}}
-section{padding:2.4rem 0;border-top:1px solid var(--line)}
-h2{font-size:2.2rem;margin-bottom:.9rem}
-h3{font-size:1.55rem;margin:1.8rem 0 .4rem}
-.tag{font:600 .9rem var(--body);color:var(--mute);margin:0 0 .4rem}
+@media (prefers-reduced-motion:reduce){.pkt,.caret{animation:none}.pkt{transform:translateX(290px)}}
+
+/* sections */
+section{padding:4rem 0 1rem}
+.head{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.8rem}
+.head .num{font:italic 500 1.4rem var(--head);color:var(--mute)}
+h2{font-size:clamp(2.2rem,6vw,3rem)}
+.intro{color:var(--mute);max-width:36rem;margin:-1rem 0 2rem}
+
+/* about */
+.about{display:grid;gap:1.5rem}
+@media (min-width:820px){.about{grid-template-columns:1.3fr .7fr}}
+.about p{margin:0 0 1rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;align-content:flex-start}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:.35rem .9rem;font:600 .88rem var(--body)}
 .ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:1.2rem;padding-top:1rem}
-code{font:.9em var(--mono);background:var(--code);padding:.1em .35em;border-radius:4px}
-ol,ul{padding-left:1.3rem}li{margin-bottom:.7rem}
-footer{padding:2rem 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+
+/* tickets */
+.tickets{display:grid;gap:1.4rem}
+.ticket{position:relative;display:grid;grid-template-columns:5rem 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:transform .2s ease,box-shadow .2s ease}
+.ticket:hover{transform:translateY(-3px);box-shadow:0 14px 30px -20px rgba(0,0,0,.45)}
+.stub{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;border-right:2px dashed var(--line);padding:1rem .3rem}
+.stub b{font:500 2.1rem/1 var(--head)}
+.stub span{font:600 .68rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.ticket::before,.ticket::after{content:"";position:absolute;left:calc(5rem - 10px);width:18px;height:18px;border-radius:50%;background:var(--bg);border:1px solid var(--line)}
+.ticket::before{top:-10px;border-top-color:transparent;border-left-color:transparent;transform:rotate(45deg)}
+.ticket::after{bottom:-10px;border-bottom-color:transparent;border-right-color:transparent;transform:rotate(45deg)}
+.tbody{padding:1.3rem 1.4rem 1.1rem}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.cat{font:600 .78rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.stamp{margin-left:auto;font:600 .72rem var(--body);letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:5px;padding:.08rem .45rem;transform:rotate(-4deg)}
+.ticket h3{font-size:1.65rem;margin-bottom:.35rem}
+.ticket .sum{margin:0;color:var(--mute)}
+details{margin-top:.8rem}
+summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.4rem;font:600 .92rem var(--body)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"↓";transition:transform .2s}
+details[open] summary::after{transform:rotate(180deg)}
+details[open] summary{margin-bottom:.4rem}
+details ol,details ul{padding-left:1.3rem}
+details li{margin-bottom:.6rem}
+details p{margin:.6rem 0}
+
+/* reads */
+.reads{display:grid;gap:1.2rem}
+@media (min-width:720px){.reads{grid-template-columns:1fr 1fr}}
+.read{display:flex;flex-direction:column;justify-content:space-between;gap:1rem;min-height:12rem;padding:1.5rem;border:1px solid var(--line);border-radius:16px;background:var(--card);text-decoration:none;transition:transform .2s ease,background .2s ease}
+.read:hover{transform:translateY(-3px)}
+.read h3{font-size:1.7rem}
+.read p{margin:.4rem 0 0;color:var(--mute)}
+.go{font:600 .92rem var(--body)}
+.read:hover .go{text-decoration:underline;text-underline-offset:4px}
+
+/* contact */
+.cta{border-radius:20px;background:var(--ink);color:var(--bg);padding:2.6rem 1.8rem;text-align:center}
+.cta h2{font-size:clamp(2.2rem,7vw,3.4rem);font-weight:500}
+.cta p{margin:.8rem auto 1.6rem;max-width:30rem;opacity:.8}
+.btns{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem}
+.btn{color:var(--bg);border:1.5px solid var(--bg);border-radius:999px;padding:.55rem 1.3rem;text-decoration:none;font:600 .95rem var(--body)}
+.btn:hover{background:var(--bg);color:var(--ink)}
+.btn:focus-visible{outline-color:var(--bg)}
+footer{padding:3rem 0;color:var(--mute);font-size:.92rem;text-align:center}
 </style>
 </head>
 <body>
-<header>
-<nav aria-label="Main"><a href="#about">About</a><a href="#packets-and-tickets">Packets &amp; Tickets</a><a href="#longer-reads">Reads</a><a href="#contact">Contact</a></nav>
-<div style="padding:2.5rem 0 2rem">
+<header class="top">
+<div class="wrap">
+<a class="mono" href="#top" aria-label="Back to top">LA</a>
+<nav aria-label="Main"><a href="#about">About</a><a href="#tickets">Packets <span class="amp">&amp;</span> Tickets</a><a href="#reads">Reads</a><a href="#contact">Contact</a></nav>
+</div>
+</header>
+
+<div class="wrap" id="top">
+<div class="hero">
+<div>
+<p class="kicker">Notes from the help desk to the network</p>
 <h1>Layan Albahouth</h1>
-<p class="sub">Systems &amp; Networking</p>
+<p class="sub">Systems <span class="amp">&amp;</span> Networking</p>
 <p class="lede">Every ticket is a small puzzle, and this site is my notebook of the ones I’ve solved: what I checked, what I learned, and what I’d do next time.</p>
+</div>
+<div class="term" role="img" aria-label="A terminal showing whoami: Layan, systems support administrator">
+<div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> whoami
+layan · systems support administrator
+<span class="p">$</span> cat focus.txt
+systems ⇄ networks
+<span class="p">$</span> status
+<span class="ok">ready for the next ticket</span> <span class="caret"></span></pre>
+</div>
+</div>
 <svg class="link" viewBox="0 0 600 120" role="img" aria-label="A small packet travelling back and forth between Systems and Networks">
 <line x1="100" y1="60" x2="500" y2="60" class="dash"/>
 <circle cx="56" cy="60" r="44" class="n"/><text x="56" y="66" class="t">Systems</text>
@@ -63,63 +156,35 @@ footer{padding:2rem 1.25rem 3rem;color:var(--mute);font-size:.95rem}
 <rect class="pkt" x="0" y="50" width="20" height="20" rx="4"/>
 </svg>
 </div>
-</header>
-<main>
+
+<main class="wrap">
 <section id="about">
-<h2>About</h2>
+<div class="head"><span class="num">01</span><h2>About</h2></div>
+<div class="about">
+<div>
 <p>I work as a systems support administrator. Day to day that means users, devices, accounts and the connections between them. I’m moving toward infrastructure work where systems and networks meet.</p>
 <p>This site is where I keep what I learn: troubleshooting steps and lab write-ups. It only contains personal labs and general techniques.</p>
 <p class="ar" lang="ar" dir="rtl">أعمل في دعم الأنظمة، وأتطور نحو البنية التحتية حيث تلتقي الأنظمة بالشبكات. أوثّق هنا ما أتعلمه من خطوات حل المشاكل والمختبرات.</p>
+</div>
+<div class="chips" aria-label="Topics">
+<span class="chip">Troubleshooting</span><span class="chip">DNS</span><span class="chip">VPN</span><span class="chip">Microsoft 365</span><span class="chip">Endpoint management</span><span class="chip">Windows</span>
+</div>
+</div>
 </section>
 
-<section id="packets-and-tickets">
-<h2>Packets &amp; Tickets</h2>
-<p class="tag">Troubleshooting</p>
-<h3>“No internet”: is it the network or the system?</h3>
-<p>This is one of the most common support tickets, and the cause can sit in either world. Before changing anything, I work through these checks in order, from cheapest to deepest.</p>
-<ol>
-<li><strong>Close the browser and try another one.</strong> If the second browser works, the problem is the first browser, not the network.</li>
-<li><strong>Read the exact error.</strong> <code>DNS_PROBE_FINISHED_NO_INTERNET</code> and a connection timeout point to different causes, so I never skip this.</li>
-<li><strong>Try one site, then several.</strong> One site failing usually means the site itself or its DNS record. Every site failing points to the connection.</li>
-</ol>
-<h3>Then separate IP from name</h3>
-<p>Ping an IP address, then a domain name:</p>
-<ul>
-<li>The IP works but the name doesn’t: DNS is the problem.</li>
-<li>Neither works: the connection is down, so check the cable or Wi-Fi, the IP configuration and the default gateway.</li>
-</ul>
-<p>Some networks block ping, so a failed ping on its own isn’t proof. Run <code>nslookup google.com</code> as a second check: if it fails while the IP address still answers, that points to DNS.</p>
-<p>These steps are small, but they tell you where to look before you escalate. They are also where my systems and networking work overlap, and it’s the part I enjoy most.</p>
-<p class="ar" lang="ar" dir="rtl">الملخص: عند شكوى «ما عندي إنترنت»، جرّب متصفحًا آخر، واقرأ رسالة الخطأ بدقة، وحدّد هل المشكلة في موقع واحد أو كل المواقع، ثم اختبر الاتصال بعنوان IP ثم باسم نطاق لتعرف هل المشكلة في الـ DNS أو في الاتصال.</p>
-</section>
+<section id="tickets">
+<div class="head"><span class="num">02</span><h2>Packets <span class="amp">&amp;</span> Tickets</h2></div>
+<p class="intro">Real-world problems, solved step by step. Open a ticket to see how I work through it.</p>
+<div class="tickets">
 
-<section id="outlook-notes">
-<p class="tag">Troubleshooting</p>
-<h3 style="margin-top:0">Outlook: search not working or new mail not arriving</h3>
-<p>A full mailbox is one cause, but not the only one. A damaged local cache (the OST file) or a damaged profile can also stop Outlook from showing new mail, so I check in this order:</p>
-<ol>
-<li><strong>Check mailbox space.</strong> Under File &gt; Info, look at the storage bar. If it’s full, clear Deleted Items.</li>
-<li><strong>Check Work Offline.</strong> If Outlook is working offline, new mail won’t sync until you switch it back.</li>
-<li><strong>Rename the OST file.</strong> Close Outlook, open <code>%localappdata%\Microsoft\Outlook</code>, and rename the <code>.ost</code> file to <code>.ost.old</code>. Outlook builds a fresh one and syncs again.</li>
-<li><strong>Create a new profile.</strong> If it still fails, go to Control Panel &gt; Mail &gt; Show Profiles &gt; Add.</li>
-</ol>
-<p>Only rename the OST when the mailbox lives on Exchange or Microsoft 365, because the OST is a local copy and anything stored only on the PC would be lost. Also note that if “Mail to keep offline” is set to a short range, local search only covers that period.</p>
-<p class="ar" lang="ar" dir="rtl">الملخص: افحص مساحة الميلبوكس ووضع Work Offline، ثم أعد تسمية ملف OST، وإذا استمرت المشكلة أنشئ بروفايل جديد. لا تعيد تسمية OST إلا إذا كان البريد على Exchange أو Microsoft 365.</p>
-
-<h3>Teams meeting option missing in Outlook</h3>
-<p>Outlook sometimes disables the Teams add-in when it decides the add-in loads too slowly. To bring it back:</p>
-<ol>
-<li>Go to File &gt; Options &gt; Add-ins, set Manage to <strong>Disabled Items</strong>, and click Go.</li>
-<li>Select the Teams add-in and click Enable.</li>
-<li>Restart Outlook.</li>
-</ol>
-<p>To stop it happening again, go to File &gt; Info &gt; Slow and Disabled COM Add-ins and choose <strong>Always enable this add-in</strong>. The new Outlook doesn’t use COM add-ins at all, so this applies to classic Outlook.</p>
-<p class="ar" lang="ar" dir="rtl">الملخص: إذا اختفى خيار Teams Meeting، فعّل الإضافة من Disabled Items ثم أعد تشغيل Outlook، واختر Always enable لمنع تعطيلها مرة أخرى.</p>
-</section>
-
-<section id="vpn-notes">
-<p class="tag">Troubleshooting</p>
-<h3 style="margin-top:0">FortiClient VPN stops at a percentage: what it tells you</h3>
+<article class="ticket">
+<div class="stub"><b>01</b><span>VPN</span></div>
+<div class="tbody">
+<div class="meta"><span class="cat">Network · FortiClient</span><span class="stamp">Resolved</span></div>
+<h3>FortiClient VPN stops at a percentage: what it tells you</h3>
+<p class="sum">Where the progress bar stops tells you which stage failed, and which team should take the ticket.</p>
+<details>
+<summary>Open ticket</summary>
 <p>FortiClient’s SSL VPN shows a progress percentage while it connects, and where it stops narrows down the cause. These are the stages I use.</p>
 <ul>
 <li><strong>Stops around 10%.</strong> The client can’t reach the VPN server. Check the internet connection first, then the gateway address and port set in FortiClient.</li>
@@ -130,22 +195,106 @@ footer{padding:2rem 1.25rem 3rem;color:var(--mute);font-size:.95rem}
 </ul>
 <p>Server-side fixes (groups, policies, timeouts) belong to the network team, but knowing the percentage makes the ticket much faster to route.</p>
 <p class="ar" lang="ar" dir="rtl">الملخص: النسبة اللي يوقف عندها FortiClient تدل على مرحلة المشكلة: عند 10% الوصول للسيرفر، عند 43% و 45% مشكلة مصادقة، عند 48% المصادقة الثنائية، وعند 98% فشل بناء النفق بعد نجاح تسجيل الدخول.</p>
+</details>
+</div>
+</article>
+
+<article class="ticket">
+<div class="stub"><b>02</b><span>DNS</span></div>
+<div class="tbody">
+<div class="meta"><span class="cat">Network · Connectivity</span><span class="stamp">Resolved</span></div>
+<h3>“No internet”: is it the network or the system?</h3>
+<p class="sum">The most common ticket. A few cheap checks show whether it’s the browser, DNS or the connection.</p>
+<details>
+<summary>Open ticket</summary>
+<p>This is one of the most common support tickets, and the cause can sit in either world. Before changing anything, I work through these checks in order, from cheapest to deepest.</p>
+<ol>
+<li><strong>Close the browser and try another one.</strong> If the second browser works, the problem is the first browser, not the network.</li>
+<li><strong>Read the exact error.</strong> <code>DNS_PROBE_FINISHED_NO_INTERNET</code> and a connection timeout point to different causes, so I never skip this.</li>
+<li><strong>Try one site, then several.</strong> One site failing usually means the site itself or its DNS record. Every site failing points to the connection.</li>
+</ol>
+<p><strong>Then separate IP from name.</strong> Ping an IP address, then a domain name:</p>
+<ul>
+<li>The IP works but the name doesn’t: DNS is the problem.</li>
+<li>Neither works: the connection is down, so check the cable or Wi-Fi, the IP configuration and the default gateway.</li>
+</ul>
+<p>Some networks block ping, so a failed ping on its own isn’t proof. Run <code>nslookup google.com</code> as a second check: if it fails while the IP address still answers, that points to DNS.</p>
+<p>These steps are small, but they tell you where to look before you escalate. They are also where my systems and networking work overlap, and it’s the part I enjoy most.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: عند شكوى «ما عندي إنترنت»، جرّب متصفحًا آخر، واقرأ رسالة الخطأ بدقة، وحدّد هل المشكلة في موقع واحد أو كل المواقع، ثم اختبر الاتصال بعنوان IP ثم باسم نطاق لتعرف هل المشكلة في الـ DNS أو في الاتصال.</p>
+</details>
+</div>
+</article>
+
+<article class="ticket">
+<div class="stub"><b>03</b><span>Mail</span></div>
+<div class="tbody">
+<div class="meta"><span class="cat">Systems · Outlook</span><span class="stamp">Resolved</span></div>
+<h3>Outlook: search not working or new mail not arriving</h3>
+<p class="sum">A full mailbox is only one cause. The local cache and the profile can break sync too.</p>
+<details>
+<summary>Open ticket</summary>
+<p>A full mailbox is one cause, but not the only one. A damaged local cache (the OST file) or a damaged profile can also stop Outlook from showing new mail, so I check in this order:</p>
+<ol>
+<li><strong>Check mailbox space.</strong> Under File &gt; Info, look at the storage bar. If it’s full, clear Deleted Items.</li>
+<li><strong>Check Work Offline.</strong> If Outlook is working offline, new mail won’t sync until you switch it back.</li>
+<li><strong>Rename the OST file.</strong> Close Outlook, open <code>%localappdata%\Microsoft\Outlook</code>, and rename the <code>.ost</code> file to <code>.ost.old</code>. Outlook builds a fresh one and syncs again.</li>
+<li><strong>Create a new profile.</strong> If it still fails, go to Control Panel &gt; Mail &gt; Show Profiles &gt; Add.</li>
+</ol>
+<p>Only rename the OST when the mailbox lives on Exchange or Microsoft 365, because the OST is a local copy and anything stored only on the PC would be lost. Also note that if “Mail to keep offline” is set to a short range, local search only covers that period.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: افحص مساحة الميلبوكس ووضع Work Offline، ثم أعد تسمية ملف OST، وإذا استمرت المشكلة أنشئ بروفايل جديد. لا تعيد تسمية OST إلا إذا كان البريد على Exchange أو Microsoft 365.</p>
+</details>
+</div>
+</article>
+
+<article class="ticket">
+<div class="stub"><b>04</b><span>Teams</span></div>
+<div class="tbody">
+<div class="meta"><span class="cat">Systems · Outlook add-ins</span><span class="stamp">Resolved</span></div>
+<h3>Teams meeting option missing in Outlook</h3>
+<p class="sum">Outlook can quietly disable the Teams add-in. Here’s how to bring it back and keep it on.</p>
+<details>
+<summary>Open ticket</summary>
+<p>Outlook sometimes disables the Teams add-in when it decides the add-in loads too slowly. To bring it back:</p>
+<ol>
+<li>Go to File &gt; Options &gt; Add-ins, set Manage to <strong>Disabled Items</strong>, and click Go.</li>
+<li>Select the Teams add-in and click Enable.</li>
+<li>Restart Outlook.</li>
+</ol>
+<p>To stop it happening again, go to File &gt; Info &gt; Slow and Disabled COM Add-ins and choose <strong>Always enable this add-in</strong>. The new Outlook doesn’t use COM add-ins at all, so this applies to classic Outlook.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: إذا اختفى خيار Teams Meeting، فعّل الإضافة من Disabled Items ثم أعد تشغيل Outlook، واختر Always enable لمنع تعطيلها مرة أخرى.</p>
+</details>
+</div>
+</article>
+
+</div>
 </section>
 
-<section id="longer-reads">
-<h2>Longer reads</h2>
-<p>Deeper write-ups that live on their own pages.</p>
-<ul>
-<li><a href="/endpoint-central-agent/">What the Endpoint Central agent does, and why it matters</a>: how a managed PC receives patches, software and policies.</li>
-<li><a href="/windows-11/">Getting a PC ready for Windows 11</a>: requirements, TPM and Secure Boot, and a safe install.</li>
-</ul>
+<section id="reads">
+<div class="head"><span class="num">03</span><h2>Longer reads</h2></div>
+<div class="reads">
+<a class="read" href="/endpoint-central-agent/">
+<div><p class="kicker">Endpoint management</p><h3>What the Endpoint Central agent does, and why it matters</h3><p>How a managed PC receives patches, software and policies.</p></div>
+<span class="go">Read →</span>
+</a>
+<a class="read" href="/windows-11/">
+<div><p class="kicker">Windows</p><h3>Getting a PC ready for Windows 11</h3><p>Requirements, TPM and Secure Boot, and a safe install.</p></div>
+<span class="go">Read →</span>
+</a>
+</div>
 </section>
 
 <section id="contact">
-<h2>Contact</h2>
-<p>The best way to reach me is <a href="https://www.linkedin.com/in/bylayann" target="_blank" rel="noopener noreferrer">LinkedIn</a>. You can also find me on <a href="https://x.com/bylayaan" target="_blank" rel="noopener noreferrer">X</a> and <a href="https://github.com/layanalbahouth" target="_blank" rel="noopener noreferrer">GitHub</a>. I’m always glad to connect with people working in systems, networking and security.</p>
+<div class="cta">
+<h2>Let’s connect</h2>
+<p>I’m always glad to talk with people working in systems, networking and security.</p>
+<div class="btns">
+<a class="btn" href="https://www.linkedin.com/in/bylayann" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+<a class="btn" href="https://x.com/bylayaan" target="_blank" rel="noopener noreferrer">X</a>
+<a class="btn" href="https://github.com/layanalbahouth" target="_blank" rel="noopener noreferrer">GitHub</a>
+</div>
+</div>
 </section>
 </main>
-<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+<footer class="wrap">© Layan Albahouth · Labs and notes are personal and don’t reflect any employer.</footer>
 </body>
 </html>
