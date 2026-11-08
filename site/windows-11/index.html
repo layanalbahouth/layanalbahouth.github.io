@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Getting a PC ready for Windows 11 | Layan Albahouth</title>
+<meta name="description" content="Windows 11 requirements, TPM and Secure Boot, and a safe way to install it.">
+<link rel="canonical" href="https://bylayann.com/windows-11/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F2F0EC'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ELA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:42rem;margin:0 auto;padding:1.2rem 1.25rem 3rem}
+h1,h2{font-family:"Cormorant Garamond","Iowan Old Style",Georgia,serif;line-height:1.1;font-weight:600}
+h1{font-size:clamp(2.2rem,9vw,3.2rem);margin:1.2rem 0}h2{font-size:1.7rem;margin:2rem 0 .4rem}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+ul{padding-left:1.3rem}li{margin-bottom:.5rem}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:2rem;padding-top:1rem}
+.back{font:600 .95rem "Source Sans 3",system-ui,sans-serif;color:var(--mute)}
+footer{max-width:42rem;margin:0 auto;padding:0 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="/">← Layan Albahouth | Systems &amp; Networking</a>
+<h1>Getting a PC ready for Windows 11</h1>
+<p>Windows 10 stopped receiving security updates on 14 October 2025, apart from a paid, time-limited extension. That is why moving managed PCs to Windows 11 matters: an unsupported system stops getting protection against newly found vulnerabilities.</p>
+<h2>1. Check the hardware</h2>
+<p>Windows 11 needs, at minimum:</p>
+<ul><li>A 1 GHz or faster 64-bit processor with two or more cores, on Microsoft’s supported list</li><li>4 GB of RAM</li><li>64 GB of storage</li><li>UEFI firmware that is Secure Boot capable</li><li>TPM version 2.0</li><li>A DirectX 12 compatible graphics card with a WDDM 2.0 driver</li></ul>
+<p>Microsoft’s PC Health Check app gives a quick answer on whether a PC is eligible.</p>
+<h2>2. Switch on TPM and Secure Boot</h2>
+<p>Some PCs that meet the hardware requirements still fail the check because TPM or Secure Boot is switched off in the firmware settings. Check there before deciding a PC can’t be upgraded.</p>
+<h2>3. Back up, then install</h2>
+<p>Formatting erases the disk, so back up the user’s data first. For a single PC, a clean install can be done by booting from USB installation media.</p>
+<h2>4. Many PCs at once</h2>
+<p>For a whole fleet, a management tool does the work remotely. Endpoint Central, for example, lists OS deployment among its features; see <a href="/endpoint-central-agent/">how its agent works</a>.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: انتهى دعم Windows 10 الأمني في 14 أكتوبر 2025، فيجب نقل الأجهزة إلى Windows 11. افحص المتطلبات (TPM 2.0 وSecure Boot وUEFI و4GB رام و64GB تخزين)، ثم خذ نسخة احتياطية قبل الفورمات.</p>
+</main>
+<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+</body>
+</html>
