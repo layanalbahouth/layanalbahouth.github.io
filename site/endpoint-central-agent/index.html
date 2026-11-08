@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What the Endpoint Central agent does | Layan Albahouth</title>
+<meta name="description" content="What the ManageEngine Endpoint Central agent does, how it talks to the server, and why it matters for patches, software and policies.">
+<link rel="canonical" href="https://bylayann.com/endpoint-central-agent/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F2F0EC'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ELA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:42rem;margin:0 auto;padding:1.2rem 1.25rem 3rem}
+h1,h2{font-family:"Cormorant Garamond","Iowan Old Style",Georgia,serif;line-height:1.1;font-weight:600}
+h1{font-size:clamp(2.2rem,9vw,3.2rem);margin:1.2rem 0}h2{font-size:1.7rem;margin:2rem 0 .4rem}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+code{font:.9em ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:.1em .35em;border-radius:4px}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:2rem;padding-top:1rem}
+.back{font:600 .95rem "Source Sans 3",system-ui,sans-serif;color:var(--mute)}
+footer{max-width:42rem;margin:0 auto;padding:0 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="/">← Layan Albahouth | Systems &amp; Networking</a>
+<h1>What the Endpoint Central agent does, and why it matters</h1>
+<p>ManageEngine Endpoint Central, from Zoho, is a web-based tool for managing computers from one place. Its features include software deployment, patch management, asset management, remote control and OS deployment.</p>
+<h2>The agent</h2>
+<p>The agent is a lightweight program installed on each managed computer. It works as the worker that carries out what the Endpoint Central server asks for.</p>
+<h2>How it works</h2>
+<p>The agent contacts the server over HTTPS when the computer starts and then every 90 minutes. Each time, it picks up the actions waiting for it and runs them. Those tasks include configurations, security policies and patch deployments.</p>
+<h2>Why it matters</h2>
+<p>The agent is the link between the console and the computer. If it isn’t working on a PC, the patches, software and policies queued for that PC can’t reach it, so a PC can quietly fall behind. Checking the agent is an early step when a device isn’t receiving what it should, for example before a <a href="/windows-11/">Windows 11 upgrade</a>.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: الـ Agent برنامج خفيف على كل جهاز يتصل بالسيرفر عند التشغيل ثم كل 90 دقيقة، وينفّذ المهام مثل الباتشات والبرامج والسياسات. إذا توقف، لا تصل المهام للجهاز.</p>
+</main>
+<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+</body>
+</html>
