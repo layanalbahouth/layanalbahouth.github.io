@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Layan Albahouth | Systems &amp; Networking</title>
+<meta name="description" content="Troubleshooting notes and labs from Layan Albahouth, a system support administrator working where systems and networks meet.">
+<meta property="og:title" content="Layan Albahouth | Systems &amp; Networking">
+<meta property="og:description" content="Troubleshooting notes and labs from Layan Albahouth.">
+<meta property="og:url" content="https://bylayann.com/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://bylayann.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F2F0EC'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ELA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;
+--head:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 var(--body)}
+main,header,footer{max-width:42rem;margin:0 auto;padding:0 1.25rem}
+nav{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;padding:1.3rem 0;font:600 .95rem var(--body)}
+nav a{text-decoration:none;color:var(--mute)}
+nav a:hover{color:var(--ink)}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}
+a:hover{text-decoration-thickness:2px}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+h1,h2,h3{font-family:var(--head);line-height:1.1;margin:0;font-weight:600}
+h1{font-size:clamp(3.1rem,14vw,5.6rem);font-weight:500;letter-spacing:-.01em}
+.sub{font:italic 500 clamp(1.5rem,6vw,2rem)/1.2 var(--head);color:var(--mute);margin:.5rem 0 1.4rem}
+.lede{max-width:34rem;margin:0 0 2rem}
+.link{display:block;width:100%;max-width:34rem;height:auto;margin:0 0 3rem}
+.link .dash{stroke:var(--line);stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round}
+.link .n{fill:none;stroke:var(--ink);stroke-width:2}
+.link .t{font:italic 500 20px var(--head);fill:var(--ink);text-anchor:middle}
+.pkt{fill:var(--ink);animation:hop 5s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:translateX(100px)}50%{transform:translateX(480px)}}
+@media (prefers-reduced-motion:reduce){.pkt{animation:none;transform:translateX(290px)}}
+section{padding:2.4rem 0;border-top:1px solid var(--line)}
+h2{font-size:2.2rem;margin-bottom:.9rem}
+h3{font-size:1.55rem;margin:1.8rem 0 .4rem}
+.tag{font:600 .9rem var(--body);color:var(--mute);margin:0 0 .4rem}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:1.2rem;padding-top:1rem}
+code{font:.9em var(--mono);background:var(--code);padding:.1em .35em;border-radius:4px}
+ol,ul{padding-left:1.3rem}li{margin-bottom:.7rem}
+footer{padding:2rem 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+</style>
+</head>
+<body>
+<header>
+<nav aria-label="Main"><a href="#about">About</a><a href="#packets-and-tickets">Packets &amp; Tickets</a><a href="#longer-reads">Reads</a><a href="#contact">Contact</a></nav>
+<div style="padding:2.5rem 0 2rem">
+<h1>Layan Albahouth</h1>
+<p class="sub">Systems &amp; Networking</p>
+<p class="lede">Every ticket is a small puzzle, and this site is my notebook of the ones I’ve solved: what I checked, what I learned, and what I’d do next time.</p>
+<svg class="link" viewBox="0 0 600 120" role="img" aria-label="A small packet travelling back and forth between Systems and Networks">
+<line x1="100" y1="60" x2="500" y2="60" class="dash"/>
+<circle cx="56" cy="60" r="44" class="n"/><text x="56" y="66" class="t">Systems</text>
+<circle cx="544" cy="60" r="44" class="n"/><text x="544" y="66" class="t">Networks</text>
+<rect class="pkt" x="0" y="50" width="20" height="20" rx="4"/>
+</svg>
+</div>
+</header>
+<main>
+<section id="about">
+<h2>About</h2>
+<p>I work as a systems support administrator. Day to day that means users, devices, accounts and the connections between them. I’m moving toward infrastructure work where systems and networks meet.</p>
+<p>This site is where I keep what I learn: troubleshooting steps and lab write-ups. It only contains personal labs and general techniques.</p>
+<p class="ar" lang="ar" dir="rtl">أعمل في دعم الأنظمة، وأتطور نحو البنية التحتية حيث تلتقي الأنظمة بالشبكات. أوثّق هنا ما أتعلمه من خطوات حل المشاكل والمختبرات.</p>
+</section>
+
+<section id="packets-and-tickets">
+<h2>Packets &amp; Tickets</h2>
+<p class="tag">Troubleshooting</p>
+<h3>“No internet”: is it the network or the system?</h3>
+<p>This is one of the most common support tickets, and the cause can sit in either world. Before changing anything, I work through these checks in order, from cheapest to deepest.</p>
+<ol>
+<li><strong>Close the browser and try another one.</strong> If the second browser works, the problem is the first browser, not the network.</li>
+<li><strong>Read the exact error.</strong> <code>DNS_PROBE_FINISHED_NO_INTERNET</code> and a connection timeout point to different causes, so I never skip this.</li>
+<li><strong>Try one site, then several.</strong> One site failing usually means the site itself or its DNS record. Every site failing points to the connection.</li>
+</ol>
+<h3>Then separate IP from name</h3>
+<p>Ping an IP address, then a domain name:</p>
+<ul>
+<li>The IP works but the name doesn’t: DNS is the problem.</li>
+<li>Neither works: the connection is down, so check the cable or Wi-Fi, the IP configuration and the default gateway.</li>
+</ul>
+<p>Some networks block ping, so a failed ping on its own isn’t proof. Run <code>nslookup google.com</code> as a second check: if it fails while the IP address still answers, that points to DNS.</p>
+<p>These steps are small, but they tell you where to look before you escalate. They are also where my systems and networking work overlap, and it’s the part I enjoy most.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: عند شكوى «ما عندي إنترنت»، جرّب متصفحًا آخر، واقرأ رسالة الخطأ بدقة، وحدّد هل المشكلة في موقع واحد أو كل المواقع، ثم اختبر الاتصال بعنوان IP ثم باسم نطاق لتعرف هل المشكلة في الـ DNS أو في الاتصال.</p>
+</section>
+
+<section id="outlook-notes">
+<p class="tag">Troubleshooting</p>
+<h3 style="margin-top:0">Outlook: search not working or new mail not arriving</h3>
+<p>A full mailbox is one cause, but not the only one. A damaged local cache (the OST file) or a damaged profile can also stop Outlook from showing new mail, so I check in this order:</p>
+<ol>
+<li><strong>Check mailbox space.</strong> Under File &gt; Info, look at the storage bar. If it’s full, clear Deleted Items.</li>
+<li><strong>Check Work Offline.</strong> If Outlook is working offline, new mail won’t sync until you switch it back.</li>
+<li><strong>Rename the OST file.</strong> Close Outlook, open <code>%localappdata%\Microsoft\Outlook</code>, and rename the <code>.ost</code> file to <code>.ost.old</code>. Outlook builds a fresh one and syncs again.</li>
+<li><strong>Create a new profile.</strong> If it still fails, go to Control Panel &gt; Mail &gt; Show Profiles &gt; Add.</li>
+</ol>
+<p>Only rename the OST when the mailbox lives on Exchange or Microsoft 365, because the OST is a local copy and anything stored only on the PC would be lost. Also note that if “Mail to keep offline” is set to a short range, local search only covers that period.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: افحص مساحة الميلبوكس ووضع Work Offline، ثم أعد تسمية ملف OST، وإذا استمرت المشكلة أنشئ بروفايل جديد. لا تعيد تسمية OST إلا إذا كان البريد على Exchange أو Microsoft 365.</p>
+
+<h3>Teams meeting option missing in Outlook</h3>
+<p>Outlook sometimes disables the Teams add-in when it decides the add-in loads too slowly. To bring it back:</p>
+<ol>
+<li>Go to File &gt; Options &gt; Add-ins, set Manage to <strong>Disabled Items</strong>, and click Go.</li>
+<li>Select the Teams add-in and click Enable.</li>
+<li>Restart Outlook.</li>
+</ol>
+<p>To stop it happening again, go to File &gt; Info &gt; Slow and Disabled COM Add-ins and choose <strong>Always enable this add-in</strong>. The new Outlook doesn’t use COM add-ins at all, so this applies to classic Outlook.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: إذا اختفى خيار Teams Meeting، فعّل الإضافة من Disabled Items ثم أعد تشغيل Outlook، واختر Always enable لمنع تعطيلها مرة أخرى.</p>
+</section>
+
+<section id="vpn-notes">
+<p class="tag">Troubleshooting</p>
+<h3 style="margin-top:0">FortiClient VPN stops at a percentage: what it tells you</h3>
+<p>FortiClient’s SSL VPN shows a progress percentage while it connects, and where it stops narrows down the cause. These are the stages I use.</p>
+<ul>
+<li><strong>Stops around 10%.</strong> The client can’t reach the VPN server. Check the internet connection first, then the gateway address and port set in FortiClient.</li>
+<li><strong>Stops at 42 or 43%.</strong> An authentication problem. Re-enter the username and password with the exact case they were created in, and check that the user is in the right group.</li>
+<li><strong>Stops at 45%.</strong> Also authentication: wrong credentials, or the FortiGate didn’t get an answer from the remote authentication server.</li>
+<li><strong>Stops at 48%.</strong> A two-factor authentication problem.</li>
+<li><strong>Stops at 98%.</strong> Login worked but the tunnel couldn’t be built. The usual suspects are the network (IPv6 to IPv4, high latency, blocked or inspected traffic) or a corrupted FortiClient installation, so try a different network first, then reinstall FortiClient.</li>
+</ul>
+<p>Server-side fixes (groups, policies, timeouts) belong to the network team, but knowing the percentage makes the ticket much faster to route.</p>
+<p class="ar" lang="ar" dir="rtl">الملخص: النسبة اللي يوقف عندها FortiClient تدل على مرحلة المشكلة: عند 10% الوصول للسيرفر، عند 43% و 45% مشكلة مصادقة، عند 48% المصادقة الثنائية، وعند 98% فشل بناء النفق بعد نجاح تسجيل الدخول.</p>
+</section>
+
+<section id="longer-reads">
+<h2>Longer reads</h2>
+<p>Deeper write-ups that live on their own pages.</p>
+<ul>
+<li><a href="/endpoint-central-agent/">What the Endpoint Central agent does, and why it matters</a>: how a managed PC receives patches, software and policies.</li>
+<li><a href="/windows-11/">Getting a PC ready for Windows 11</a>: requirements, TPM and Secure Boot, and a safe install.</li>
+</ul>
+</section>
+
+<section id="contact">
+<h2>Contact</h2>
+<p>The best way to reach me is <a href="https://www.linkedin.com/in/bylayann" target="_blank" rel="noopener noreferrer">LinkedIn</a>. You can also find me on <a href="https://x.com/bylayaan" target="_blank" rel="noopener noreferrer">X</a> and <a href="https://github.com/layanalbahouth" target="_blank" rel="noopener noreferrer">GitHub</a>. I’m always glad to connect with people working in systems, networking and security.</p>
+</section>
+</main>
+<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+</body>
+</html>
