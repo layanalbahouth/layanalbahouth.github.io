@@ -25,7 +25,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 var(--body)
 a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}
 a:hover{text-decoration-thickness:2px}
 a:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
-h1,h2,h3{font-family:var(--head);line-height:1.08;margin:0;font-weight:600}
+h1,h2,h3{font-family:var(--head);line-height:1.08;margin:0;font-weight:600;font-variant-numeric:lining-nums}
 .amp{font-family:var(--body);font-style:normal;font-weight:400;font-size:.82em}
 code{font:.88em var(--mono);background:var(--code);padding:.1em .35em;border-radius:4px}
 
@@ -80,8 +80,8 @@ h2{font-size:clamp(2.2rem,6vw,3rem)}
 .tickets{display:grid;gap:1.4rem}
 .ticket{position:relative;display:grid;grid-template-columns:5rem 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:transform .2s ease,box-shadow .2s ease}
 .ticket:hover{transform:translateY(-3px);box-shadow:0 14px 30px -20px rgba(0,0,0,.45)}
-.stub{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;border-right:2px dashed var(--line);padding:1rem .3rem}
-.stub b{font:500 2.1rem/1 var(--head)}
+.stub{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.3rem;border-right:2px dashed var(--line);padding:1.6rem .3rem 1rem}
+.stub b{font:500 2.1rem/1 var(--head);font-variant-numeric:lining-nums}
 .stub span{font:600 .68rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .ticket::before,.ticket::after{content:"";position:absolute;left:calc(5rem - 10px);width:18px;height:18px;border-radius:50%;background:var(--bg);border:1px solid var(--line)}
 .ticket::before{top:-10px;border-top-color:transparent;border-left-color:transparent;transform:rotate(45deg)}
