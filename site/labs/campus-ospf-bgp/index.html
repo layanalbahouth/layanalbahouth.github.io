@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campus network lab: VLANs, OSPF and BGP | Layan Albahouth</title>
+<meta name="description" content="A three-building campus network in Cisco Packet Tracer with VLANs, EtherChannel trunks, OSPF and BGP, and how a broken trunk silently removed two buildings from the routing table.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Layan Albahouth">
+<meta property="og:title" content="Campus network lab: VLANs, OSPF and BGP">
+<meta property="og:description" content="A three-building campus network in Packet Tracer, and how a broken trunk silently removed two buildings from the routing table.">
+<meta property="og:url" content="https://bylayann.com/labs/campus-ospf-bgp/">
+<meta property="og:image" content="https://bylayann.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bylayann.com/og.jpg">
+<link rel="canonical" href="https://bylayann.com/labs/campus-ospf-bgp/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F2F0EC'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ELA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:42rem;margin:0 auto;padding:1.2rem 1.25rem 3rem}
+h1,h2{font-family:"Cormorant Garamond","Iowan Old Style",Georgia,serif;line-height:1.1;font-weight:600}
+h1{font-size:clamp(2.2rem,9vw,3.2rem);margin:1.2rem 0}h2{font-size:1.7rem;margin:2rem 0 .4rem}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+ul,ol{padding-left:1.3rem}li{margin-bottom:.5rem}
+code{font:.9em ui-monospace,"SF Mono",Menlo,Consolas,monospace;background:var(--code);padding:.1em .35em;border-radius:4px}
+pre{background:var(--code);padding:.9rem 1rem;border-radius:10px;overflow-x:auto;font:.9rem/1.6 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre code{background:none;padding:0}
+.ar code{display:inline-block;direction:ltr;unicode-bidi:isolate;max-width:100%;overflow-wrap:anywhere}
+blockquote{margin:1.2rem 0;padding:.2rem 0 .2rem 1rem;border-left:3px solid var(--line);color:var(--mute);font-style:italic}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:2rem;padding-top:1rem}
+.back{font:600 .95rem "Source Sans 3",system-ui,sans-serif;color:var(--mute)}
+.src{font-size:.95rem;color:var(--mute)}
+footer{max-width:42rem;margin:0 auto;padding:0 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+.fbline{margin-top:2.2rem;padding:1.1rem 1.3rem;border:1.5px dashed var(--line);border-radius:14px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:.6rem 0 1rem}
+th,td{text-align:left;padding:.45rem .5rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute)}
+.topo{display:block;width:100%;height:auto;margin:1rem 0;border:1px solid var(--line);border-radius:12px;background:#FBFAF7}
+.kick{font:600 .8rem "Source Sans 3",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1.4rem 0 0}
+.wrap-x{overflow-x:auto}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="/">← Layan Albahouth | Systems &amp; Networking</a>
+<p class="kick">Lab · Cisco Packet Tracer</p>
+<h1>Campus network lab: VLANs, OSPF and BGP</h1>
+<p>I built this lab in Cisco Packet Tracer during my Tamheer training. It models a small company: three buildings on one campus, routed internally with OSPF, connected through an ISP to a branch office with BGP. When I reopened it later, one PC could no longer reach the branch. Finding out why turned out to be the most useful part.</p>
+
+<h2>The topology</h2>
+<svg class="topo" viewBox="0 0 960 470" role="img" aria-label="Lab topology: three buildings with access and distribution switches, a core switch, an edge router in AS 65001, an ISP router in AS 65002 and a branch router in AS 65003">
+<style>.l{stroke:#1C1B19;stroke-width:2.2}.b{fill:#F2F0EC;stroke:#1C1B19;stroke-width:1.8}.t{font:600 17px 'Source Sans 3',sans-serif;fill:#1C1B19}.s{font:15px 'Source Sans 3',sans-serif;fill:#6A665E}.a{font:italic 500 20px 'Cormorant Garamond',serif;fill:#1C1B19}.z{fill:none;stroke:#C9C2B5;stroke-width:1.6;stroke-dasharray:5 5}</style>
+<rect class="z" x="8" y="10" width="630" height="450" rx="16"/><text class="a" x="26" y="40">Campus · OSPF area 0</text>
+<rect class="z" x="652" y="10" width="300" height="450" rx="16"/><text class="a" x="670" y="40">BGP</text>
+<line class="l" x1="170" y1="100" x2="300" y2="100"/><line class="l" x1="170" y1="108" x2="300" y2="108"/>
+<line class="l" x1="170" y1="240" x2="300" y2="240"/><line class="l" x1="170" y1="248" x2="300" y2="248"/>
+<line class="l" x1="170" y1="380" x2="300" y2="380"/><line class="l" x1="170" y1="388" x2="300" y2="388"/>
+<line class="l" x1="400" y1="104" x2="480" y2="244"/><line class="l" x1="400" y1="244" x2="480" y2="244"/><line class="l" x1="400" y1="384" x2="480" y2="244"/>
+<line class="l" x1="570" y1="244" x2="690" y2="244"/>
+<line class="l" x1="780" y1="244" x2="800" y2="150"/><line class="l" x1="880" y1="150" x2="870" y2="244"/><line class="l" x1="830" y1="270" x2="830" y2="360"/>
+<rect class="b" x="30" y="76" width="140" height="56" rx="10"/><text class="t" x="44" y="100">Access B1</text><text class="s" x="44" y="121">VLAN 10 · 20</text>
+<rect class="b" x="30" y="216" width="140" height="56" rx="10"/><text class="t" x="44" y="240">Access B2</text><text class="s" x="44" y="261">VLAN 30 · 40</text>
+<rect class="b" x="30" y="356" width="140" height="56" rx="10"/><text class="t" x="44" y="380">Access B3</text><text class="s" x="44" y="401">VLAN 50 · 60</text>
+<rect class="b" x="300" y="76" width="100" height="56" rx="10"/><text class="t" x="314" y="100">Dist B1</text><text class="s" x="314" y="121">1.1.1.1</text>
+<rect class="b" x="300" y="216" width="100" height="56" rx="10"/><text class="t" x="314" y="240">Dist B2</text><text class="s" x="314" y="261">2.2.2.2</text>
+<rect class="b" x="300" y="356" width="100" height="56" rx="10"/><text class="t" x="314" y="380">Dist B3</text><text class="s" x="314" y="401">3.3.3.3</text>
+<rect class="b" x="480" y="216" width="90" height="56" rx="10"/><text class="t" x="503" y="250">Core</text>
+<rect class="b" x="690" y="216" width="100" height="56" rx="10"/><text class="t" x="704" y="240">Edge</text><text class="s" x="704" y="261">AS 65001</text>
+<rect class="b" x="790" y="94" width="100" height="56" rx="10"/><text class="t" x="804" y="118">ISP</text><text class="s" x="804" y="139">AS 65002</text>
+<rect class="b" x="810" y="216" width="120" height="56" rx="10" transform="translate(0 0)"/><text class="t" x="824" y="240">Branch</text><text class="s" x="824" y="261">AS 65003</text>
+<rect class="b" x="760" y="360" width="170" height="56" rx="10"/><text class="t" x="774" y="384">PC 70</text><text class="s" x="774" y="405">192.168.70.70</text>
+<text class="s" x="235" y="70" text-anchor="middle">EtherChannel</text>
+</svg>
+<p>The campus follows a three-tier design. Each building has an access switch for the PCs and a distribution switch that routes for that building. The three distribution switches connect to one core switch, and the core connects to the edge router. The links between them are small /30 networks: 10.0.0.0/30, 10.0.0.4/30 and 10.0.0.8/30 inside the campus, and 10.1.0.0/30 onwards towards the edge, ISP and branch.</p>
+<div class="wrap-x"><table>
+<tr><th>Building</th><th>VLANs</th><th>Networks</th><th>Gateway</th></tr>
+<tr><td>Building 1</td><td>10, 20</td><td>192.168.10.0/24, 192.168.20.0/24</td><td>.1 on Dist B1</td></tr>
+<tr><td>Building 2</td><td>30, 40</td><td>192.168.30.0/24, 192.168.40.0/24</td><td>.1 on Dist B2</td></tr>
+<tr><td>Building 3</td><td>50, 60</td><td>192.168.50.0/24, 192.168.60.0/24</td><td>.1 on Dist B3</td></tr>
+<tr><td>Branch</td><td>–</td><td>192.168.70.0/24</td><td>Branch router</td></tr>
+</table></div>
+
+<h2>How the pieces fit</h2>
+<ul>
+<li><strong>Access to distribution:</strong> each access switch connects to its distribution switch with two cables bundled into one EtherChannel, configured as an 802.1Q trunk that carries that building’s two VLANs.</li>
+<li><strong>Gateways:</strong> each VLAN’s gateway is a VLAN interface (SVI) on the distribution switch, for example <code>interface Vlan10</code> with <code>192.168.10.1</code>.</li>
+<li><strong>Inside the campus:</strong> the distribution switches, the core and the edge router run OSPF in area 0 over small /30 links.</li>
+<li><strong>Outside the campus:</strong> the edge router (AS 65001), the ISP router (AS 65002) and the branch router (AS 65003) exchange routes with BGP. On the core, the branch network appears as an external OSPF route (<code>O E2</code>) learned from the edge router.</li>
+</ul>
+
+<h2>The problem: PC 20 couldn’t reach the branch</h2>
+<p>A ping from PC 20 to PC 70 at the branch failed, while PC 40 could reach PC 70 without trouble. So the BGP side was working, and the problem was somewhere inside the campus.</p>
+<p>The core’s routing table showed what was going on:</p>
+<pre><code>Core# show ip route
+O    192.168.30.0/24 [110/2] via 10.0.0.5
+O    192.168.40.0/24 [110/2] via 10.0.0.5
+O E2 192.168.70.0/24 [110/20] via 10.1.0.2</code></pre>
+<p>Only Building 2’s networks were there. Buildings 1 and 3 were missing completely, even though the core had full OSPF neighbours with all three distribution switches. The neighbours were up, but two of them were advertising nothing for their VLANs.</p>
+
+<h2>The cause</h2>
+<p>On Distribution Switch B1, both VLAN interfaces were <em>up/down</em>, and the log had a clear hint:</p>
+<pre><code>%SPANTREE-2-BLOCK_PVID_LOCAL: Blocking Port-channel1 on VLAN0001. Inconsistent port type.</code></pre>
+<p>The EtherChannel was a trunk on the access switch but still an access port on the distribution switch. Cisco calls this a <em>type inconsistency</em>: a trunk’s spanning-tree messages arrive on a port that isn’t a trunk, so the switch blocks that port to prevent a loop.</p>
+<p>That block had a knock-on effect. A VLAN interface only comes up when at least one switch port in that VLAN is up and forwarding. With the only link to the building blocked, Vlan10 and Vlan20 stayed down, and OSPF had nothing to advertise for them. Distribution Switch B3 had exactly the same mismatch on its port-channel.</p>
+<p>B1 had a second, smaller mistake: the gateway for VLAN 20 was set to <code>192.168.11.1</code>, while PC 20 expected <code>192.168.20.1</code>.</p>
+
+<h2>The fix</h2>
+<pre><code>! Distribution Switch B1 (the same trunk fix on B3, for Port-channel3)
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan20
+ ip address 192.168.20.1 255.255.255.0</code></pre>
+<p>As soon as the trunk matched on both ends, the switch logged <code>Port consistency restored</code>, the VLAN interfaces came up, and the missing networks appeared on the core.</p>
+
+<h2>Checking it works</h2>
+<pre><code>PC20&gt; ping 192.168.70.70
+Reply from 192.168.70.70: bytes=32 time&lt;1ms TTL=123
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</code></pre>
+<p>PC 20 now reaches the branch, PC 10 in its own building, and PC 60 in Building 3.</p>
+
+<h2>What I took from it</h2>
+<ul>
+<li>OSPF neighbours being up doesn’t mean every network is being advertised. The routing table on the core is the quickest way to see what’s actually missing.</li>
+<li>A trunk has two ends. When a link misbehaves, check both sides, not only the one you configured.</li>
+</ul>
+
+<p class="ar" lang="ar" dir="rtl">الملخص: لاب في Packet Tracer لشبكة شركة فيها ثلاث مباني، بـVLANs وEtherChannel وOSPF داخل الشركة وBGP مع مزود الخدمة والفرع. المشكلة كانت إن الـPort-channel من جهة سويتش التوزيع كان Access بدل Trunk، فالسويتش قفله، وطاحت واجهات الـVLAN، وOSPF ما أعلن شبكات مبنى 1 و3. وبوابة VLAN 20 كان عنوانها غلط. بعد التصحيح كل الأجهزة وصلت للفرع.</p>
+
+<p class="src">Sources: <a href="https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24063-pvid-inconsistency-24063.html" target="_blank" rel="noopener noreferrer">Cisco: Troubleshoot Spanning Tree PVID- and Type-Inconsistencies</a> · <a href="https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/41141-188.html" target="_blank" rel="noopener noreferrer">Cisco: VLAN interface (SVI) up/up conditions</a></p>
+
+<p class="fbline">Was this useful? <a href="https://docs.google.com/forms/d/e/1FAIpQLScWK0cQGa47m9wVjL7YU61HHBPE1BpIdqofavtDSje_uucHZA/viewform" target="_blank" rel="noopener noreferrer">Tell me in under a minute →</a></p>
+</main>
+<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "82c6764ced1f408a948c4f4a306b8b11"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
