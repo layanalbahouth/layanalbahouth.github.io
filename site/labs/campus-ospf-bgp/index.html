@@ -135,9 +135,6 @@ Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</code></pre>
 <li>A trunk has two ends. When a link misbehaves, check both sides, not only the one you configured.</li>
 </ul>
 
-<h2>Thanks</h2>
-<p>Thank you to Hani Alnaem, who explained BGP to me and supervised this lab during my training.</p>
-
 <p class="ar" lang="ar" dir="rtl">الملخص: لاب في Packet Tracer لشبكة شركة فيها ثلاث مباني، بـVLANs وEtherChannel وOSPF داخل الشركة وBGP مع مزود الخدمة والفرع. المشكلة كانت إن الـPort-channel من جهة سويتش التوزيع كان Access بدل Trunk، فالسويتش قفله، وطاحت واجهات الـVLAN، وOSPF ما أعلن شبكات مبنى 1 و3. وبوابة VLAN 20 كان عنوانها غلط. بعد التصحيح كل الأجهزة وصلت للفرع.</p>
 
 <p class="src">Sources: <a href="https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24063-pvid-inconsistency-24063.html" target="_blank" rel="noopener noreferrer">Cisco: Troubleshoot Spanning Tree PVID- and Type-Inconsistencies</a> · <a href="https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/41141-188.html" target="_blank" rel="noopener noreferrer">Cisco: VLAN interface (SVI) up/up conditions</a></p>
