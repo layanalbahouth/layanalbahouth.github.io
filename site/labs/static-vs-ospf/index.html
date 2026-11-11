@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Same network, two ways: static routes vs OSPF | Layan Albahouth</title>
+<meta name="description" content="The same two-router network built twice in Cisco Packet Tracer, once with static routes and once with OSPF, and what the routing table shows about each.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Layan Albahouth">
+<meta property="og:title" content="Same network, two ways: static routes vs OSPF">
+<meta property="og:description" content="The same two-router network built twice in Packet Tracer: once with static routes, once with OSPF.">
+<meta property="og:url" content="https://bylayann.com/labs/static-vs-ospf/">
+<meta property="og:image" content="https://bylayann.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bylayann.com/og.jpg">
+<link rel="canonical" href="https://bylayann.com/labs/static-vs-ospf/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23F2F0EC'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ELA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:42rem;margin:0 auto;padding:1.2rem 1.25rem 3rem}
+h1,h2{font-family:"Cormorant Garamond","Iowan Old Style",Georgia,serif;line-height:1.1;font-weight:600}
+h1{font-size:clamp(2.2rem,9vw,3.2rem);margin:1.2rem 0}h2{font-size:1.7rem;margin:2rem 0 .4rem}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+a:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+ul,ol{padding-left:1.3rem}li{margin-bottom:.5rem}
+code{font:.9em ui-monospace,"SF Mono",Menlo,Consolas,monospace;background:var(--code);padding:.1em .35em;border-radius:4px}
+pre{background:var(--code);padding:.9rem 1rem;border-radius:10px;overflow-x:auto;font:.9rem/1.6 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre code{background:none;padding:0}
+.ar code{display:inline-block;direction:ltr;unicode-bidi:isolate;max-width:100%;overflow-wrap:anywhere}
+blockquote{margin:1.2rem 0;padding:.2rem 0 .2rem 1rem;border-left:3px solid var(--line);color:var(--mute);font-style:italic}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:var(--mute);border-top:1px dashed var(--line);margin-top:2rem;padding-top:1rem}
+.back{font:600 .95rem "Source Sans 3",system-ui,sans-serif;color:var(--mute)}
+.src{font-size:.95rem;color:var(--mute)}
+footer{max-width:42rem;margin:0 auto;padding:0 1.25rem 3rem;color:var(--mute);font-size:.95rem}
+.fbline{margin-top:2.2rem;padding:1.1rem 1.3rem;border:1.5px dashed var(--line);border-radius:14px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:.6rem 0 1rem}
+th,td{text-align:left;padding:.45rem .5rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute)}
+.topo{display:block;width:100%;height:auto;margin:1rem 0;border:1px solid var(--line);border-radius:12px;background:#FBFAF7}
+.kick{font:600 .8rem "Source Sans 3",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1.4rem 0 0}
+.wrap-x{overflow-x:auto}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="/">← Layan Albahouth | Systems &amp; Networking</a>
+<p class="kick">Lab · Cisco Packet Tracer</p>
+<h1>Same network, two ways: static routes vs OSPF</h1>
+<p>Two PCs on two different networks, joined by two routers. Each router only knows the networks plugged into it, so on its own neither PC can reach the other. I built this network twice in Cisco Packet Tracer: once with static routes, once with OSPF. Same addresses, same result, very different way of getting there.</p>
+
+<h2>The network</h2>
+<svg class="topo" viewBox="0 0 900 170" role="img" aria-label="Two PCs on two networks connected through two routers">
+<style>.l{stroke:#1C1B19;stroke-width:2.2}.b{fill:#F2F0EC;stroke:#1C1B19;stroke-width:1.8}.t{font:600 17px 'Source Sans 3',sans-serif;fill:#1C1B19}.s{font:15px 'Source Sans 3',sans-serif;fill:#6A665E}</style>
+<line class="l" x1="170" y1="70" x2="290" y2="70"/><line class="l" x1="390" y1="70" x2="510" y2="70"/><line class="l" x1="610" y1="70" x2="730" y2="70"/>
+<rect class="b" x="30" y="42" width="140" height="56" rx="10"/><text class="t" x="44" y="66">PC1</text><text class="s" x="44" y="87">192.168.10.10</text>
+<rect class="b" x="290" y="42" width="100" height="56" rx="10"/><text class="t" x="304" y="66">R1</text><text class="s" x="304" y="87">router</text>
+<rect class="b" x="510" y="42" width="100" height="56" rx="10"/><text class="t" x="524" y="66">R2</text><text class="s" x="524" y="87">router</text>
+<rect class="b" x="730" y="42" width="140" height="56" rx="10"/><text class="t" x="744" y="66">PC2</text><text class="s" x="744" y="87">192.168.11.11</text>
+<text class="s" x="230" y="130" text-anchor="middle">192.168.10.0/24</text><text class="s" x="450" y="130" text-anchor="middle">10.10.10.x link</text><text class="s" x="670" y="130" text-anchor="middle">192.168.11.0/24</text>
+</svg>
+<div class="wrap-x"><table>
+<tr><th>Device</th><th>Interface</th><th>Address</th></tr>
+<tr><td>R1</td><td>G0/0 (towards PC1)</td><td>192.168.10.1/24</td></tr>
+<tr><td>R2</td><td>G0/0 (towards PC2)</td><td>192.168.11.1/24</td></tr>
+<tr><td>R1 ↔ R2</td><td>G0/1</td><td>10.10.10.1 and 10.10.10.2</td></tr>
+<tr><td>PC1 / PC2</td><td>–</td><td>192.168.10.10 / 192.168.11.11, gateway .1</td></tr>
+</table></div>
+
+<h2>Way 1: static routes</h2>
+<p>With static routes, I tell each router by hand where the other network is. Each router needs one line, pointing to the other router’s address on the link between them:</p>
+<pre><code>! R1
+ip route 192.168.11.0 255.255.255.0 10.10.10.1
+! R2
+ip route 192.168.10.0 255.255.255.0 10.10.10.2</code></pre>
+<p>The routing table on R1 then shows the route with an <code>S</code>:</p>
+<pre><code>S    192.168.11.0/24 [1/0] via 10.10.10.1</code></pre>
+
+<h2>Way 2: OSPF</h2>
+<p>With OSPF, I don’t write the route at all. Each router announces the networks it’s connected to, and they learn the rest from each other:</p>
+<pre><code>! R1 (R2 is the same, with 192.168.11.0)
+router ospf 1
+ network 192.168.10.0 0.0.0.255 area 0
+ network 10.10.10.0 0.0.0.3 area 0</code></pre>
+<p>Once the two routers become neighbours, <code>show ip ospf neighbor</code> lists the other router with the state <code>FULL</code>.</p>
+<p>And the same network now appears in R1’s table, this time with an <code>O</code>, learned from R2:</p>
+<pre><code>O    192.168.11.0/24 [110/2] via 10.10.10.2</code></pre>
+<p>In both versions, a ping from PC1 to PC2 gets 4 out of 4 replies.</p>
+
+<h2>What the numbers in brackets mean</h2>
+<p>The first number is the administrative distance: how much the router trusts the source of a route when it has more than one way to learn the same network. Lower wins. On Cisco routers the default is 1 for a static route and 110 for OSPF, which is exactly what the two tables show. The second number is the metric: 0 for the static route, and an OSPF cost of 2 for the learned one.</p>
+
+<h2>Which one, when?</h2>
+<div class="wrap-x"><table>
+<tr><th></th><th>Static routes</th><th>OSPF</th></tr>
+<tr><td>What you configure</td><td>The path to every remote network, on every router</td><td>The networks each router is connected to</td></tr>
+<tr><td>A new network appears</td><td>Add a route by hand on each router that needs to reach it</td><td>Advertise it on the router it’s connected to, and the others learn it</td></tr>
+<tr><td>Good fit</td><td>Small, simple networks that rarely change</td><td>Networks that grow or change</td></tr>
+</table></div>
+<p>For two routers, static routes are honestly simpler: two lines and done. The difference shows up as the network grows, which is why the <a href="/labs/campus-ospf-bgp/">campus lab</a> runs OSPF across its switches instead.</p>
+
+<p class="ar" lang="ar" dir="rtl">الملخص: نفس الشبكة انبنت مرتين في Packet Tracer. مرة بـStatic routes، كل راوتر نكتب له يدويًا وين الشبكة الثانية، وتطلع في الجدول بحرف S وAD قيمته 1. ومرة بـOSPF، الراوترات تعلن شبكاتها وتتعلم من بعض، وتطلع بحرف O وAD قيمته 110. الـStatic أبسط للشبكات الصغيرة الثابتة، والـOSPF أنسب للشبكات اللي تكبر وتتغير.</p>
+
+<p class="src">Sources: <a href="https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/15986-admin-distance.html" target="_blank" rel="noopener noreferrer">Cisco: What Is Administrative Distance?</a></p>
+
+<p class="fbline">Was this useful? <a href="https://docs.google.com/forms/d/e/1FAIpQLScWK0cQGa47m9wVjL7YU61HHBPE1BpIdqofavtDSje_uucHZA/viewform" target="_blank" rel="noopener noreferrer">Tell me in under a minute →</a></p>
+</main>
+<footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
+<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "82c6764ced1f408a948c4f4a306b8b11"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
