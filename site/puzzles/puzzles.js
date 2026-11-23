@@ -126,6 +126,8 @@
   function h(tag, a, kids) { var e = document.createElement(tag); for (var k in (a || {})) { if (k === 'class') e.className = a[k]; else if (k === 'text') e.textContent = a[k]; else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), a[k]); else e.setAttribute(k, a[k]); } (kids || []).forEach(function (c) { if (c != null) e.append(c); }); return e; }
   function s(tag, a, kids) { var e = document.createElementNS(NS, tag); for (var k in (a || {})) e.setAttribute(k, a[k]); (kids || []).forEach(function (c) { e.append(c); }); return e; }
   function st(tag, a, txt) { var e = s(tag, a); e.textContent = txt; return e; }
+  /* counts a game start or win as a visit to a tiny hidden page, so it shows in Cloudflare Web Analytics */
+  function track(id, ev) { if (location.hostname !== 'bylayann.com') return; try { var f = document.createElement('iframe'); f.src = '/puzzles/t/' + id + '-' + ev + '/'; f.title = ''; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.style.cssText = 'position:absolute;width:1px;height:1px;border:0;left:-9999px'; document.body.append(f); setTimeout(function () { f.remove(); }, 8000); } catch (e) {} }
   var store = { get: function (k) { try { return localStorage.getItem('pz:' + k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem('pz:' + k, v); } catch (e) {} } };
   function wait(ms) { return new Promise(function (r) { setTimeout(r, REDUCED ? Math.min(ms, 60) : ms); }); }
   function tween(ms, fn) { return new Promise(function (res) { if (REDUCED) { fn(1); return res(); } var t0 = Date.now(); (function f() { var p = Math.min(1, (Date.now() - t0) / ms), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; fn(e); if (p < 1) setTimeout(f, 16); else res(); })(); }); }
@@ -350,7 +352,7 @@
       penalty: function (sec) { G.t = Math.max(1, G.t - sec); drawClock(); var f = h('span', { class: 'pz-float', text: '−' + sec + 's' }); el.append(f); setTimeout(function () { f.remove(); }, 950); },
       win: function (delay, t) {
         if (G.over) return; G.over = true; if (t) say(t, 'ok'); var used = Math.round(P.time - G.t), stars = G.hearts;
-        store.set(id, 'solved'); var best = +(store.get(id + ':stars') || 0); if (stars > best) store.set(id + ':stars', stars);
+        store.set(id, 'solved'); track(id, 'win'); var best = +(store.get(id + ':stars') || 0); if (stars > best) store.set(id + ':stars', stars);
         setTimeout(function () {
           if (!G.alive) return; SFX.win(); confetti(el);
           var sr = h('div', { class: 'pz-stars', 'aria-label': stars + ' of 3 stars' }, [0, 1, 2].map(function () { return h('span', { text: '★' }); }));
@@ -366,7 +368,7 @@
     async function countdown(o) {
       try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) {}
       for (var n = 3; n > 0; n--) { o.replaceChildren(h('div', { class: 'pz-cd', text: String(n) })); beep(520, .09, 'square', .05); await wait(550); if (!G.alive) return; }
-      o.remove(); SFX.go(); G.go = true; say(P.goal);
+      o.remove(); SFX.go(); G.go = true; say(P.goal); track(id, 'start');
     }
     var o = ov([h('h3', { text: P.title }), h('p', { text: P.goal }), P.tip ? h('p', { class: 'pz-tip', text: '💡 ' + P.tip }) : null, h('p', { class: 'meta', text: P.time + ' seconds · 3 lives' + (id === 'routes' ? ' · 5 rounds' : '') }), h('button', { class: 'pz-go', type: 'button', text: '▶ Play', onclick: function () { o.style.background = 'rgba(9,14,20,.55)'; countdown(o); } })]);
     if (auto) { o.style.background = 'rgba(9,14,20,.55)'; countdown(o); }
