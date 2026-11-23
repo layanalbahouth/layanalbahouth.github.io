@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Layan Albahouth | Systems &amp; Networking</title>
@@ -24,7 +24,8 @@
 <style>
 :root{--bg:#F2F0EC;--card:#FBFAF7;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;--term:#1C1B19;--termtx:#ECE8E0;
 --head:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#161513;--card:#1E1C19;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#2A2723;--term:#0E0D0C;--termtx:#ECE8E0;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#161513;--card:#1E1C19;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#2A2723;--term:#0E0D0C;--termtx:#ECE8E0;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#161513;--card:#1E1C19;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#2A2723;--term:#0E0D0C;--termtx:#ECE8E0;color-scheme:dark}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 var(--body)}
@@ -136,13 +137,17 @@ details p{margin:.6rem 0}
 .btn:hover{background:var(--bg);color:var(--ink)}
 .btn:focus-visible{outline-color:var(--bg)}
 footer{padding:3rem 0;color:var(--mute);font-size:.92rem;text-align:center}
+
+.theme-btn{background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;width:2.4rem;height:2.4rem;cursor:pointer;font-size:1.05rem;line-height:1;flex:none}
+.theme-btn:hover{border-color:var(--ink)}
+.top .wrap nav{margin-left:auto}
 </style>
 </head>
 <body>
 <header class="top">
 <div class="wrap">
 <a class="mono" href="#top" aria-label="Back to top">LA</a>
-<nav aria-label="Main"><a href="#about">About</a><a href="#tickets">Packets <span class="amp">&amp;</span> Tickets</a><a href="#reads">Reads</a><a href="#labs">Labs</a><a href="#contact">Contact</a></nav>
+<nav aria-label="Main"><a href="#about">About</a><a href="#tickets">Packets <span class="amp">&amp;</span> Tickets</a><a href="#reads">Reads</a><a href="#labs">Labs</a><a href="/puzzles/">Puzzles</a><a href="#contact">Contact</a></nav><button class="theme-btn" type="button" aria-label="Dark or light mode" title="Dark / Light">◐</button>
 </div>
 </header>
 
@@ -337,5 +342,5 @@ systems ⇄ networks
 </main>
 <footer class="wrap">© Layan Albahouth · Labs and notes are personal and don’t reflect any employer.</footer>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "82c6764ced1f408a948c4f4a306b8b11"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script>(function(){function cur(){var t=document.documentElement.dataset.theme;return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}document.querySelectorAll(".theme-btn").forEach(function(b){b.addEventListener("click",function(){var n=cur()==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}})})})();</script></body>
 </html>
