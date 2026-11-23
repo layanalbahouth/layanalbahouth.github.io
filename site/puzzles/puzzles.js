@@ -128,6 +128,7 @@
   function st(tag, a, txt) { var e = s(tag, a); e.textContent = txt; return e; }
   /* counts a game start or win as a visit to a tiny hidden page, so it shows in Cloudflare Web Analytics */
   function track(id, ev) { if (location.hostname !== 'bylayann.com') return; try { var f = document.createElement('iframe'); f.src = '/puzzles/t/' + id + '-' + ev + '/'; f.title = ''; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.style.cssText = 'position:absolute;width:1px;height:1px;border:0;left:-9999px'; document.body.append(f); setTimeout(function () { f.remove(); }, 8000); } catch (e) {} }
+  var visit = { get: function (k) { try { return sessionStorage.getItem('pz:' + k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem('pz:' + k, v); } catch (e) {} } };
   var store = { get: function (k) { try { return localStorage.getItem('pz:' + k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem('pz:' + k, v); } catch (e) {} } };
   function wait(ms) { return new Promise(function (r) { setTimeout(r, REDUCED ? Math.min(ms, 60) : ms); }); }
   function tween(ms, fn) { return new Promise(function (res) { if (REDUCED) { fn(1); return res(); } var t0 = Date.now(); (function f() { var p = Math.min(1, (Date.now() - t0) / ms), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; fn(e); if (p < 1) setTimeout(f, 16); else res(); })(); }); }
@@ -318,7 +319,7 @@
     mute.onclick = function () { muted = !muted; mute.textContent = muted ? '🔇' : '🔊'; store.set('mute', muted ? '1' : '0'); };
     var clueArea = h('div', { class: 'pz-cluebox', hidden: '' }), stage = h('div', { class: 'pz-stage' }), msg = h('p', { class: 'pz-msg', text: P.goal }), foot = h('div', { class: 'pz-foot' });
     el.append(h('div', { class: 'pz-head' }, [h('div', {}, [h('p', { class: 'pz-k', text: '🧩 ' + (onLab ? 'Solve it before you read' : 'Network puzzle') }), h('h2', { class: 'pz-t', text: P.title })]), h('div', { class: 'pz-hud' }, [hearts, clock, mute])]), tbar, msg, stage, clueArea, foot);
-    if (onLab) foot.append(h('button', { class: 'pz-skip', type: 'button', text: 'Skip, take me to the lab ↓', onclick: function () { G.alive = false; store.set(id, store.get(id) || 'skipped'); mini(el, id); } }));
+    if (onLab) foot.append(h('button', { class: 'pz-skip', type: 'button', text: 'Skip, take me to the lab ↓', onclick: function () { G.alive = false; visit.set(id, 'skipped'); mini(el, id); } }));
     function drawHearts() { hearts.replaceChildren.apply(hearts, [0, 1, 2].map(function (i) { return h('b', { class: i < G.hearts ? '' : 'off', text: '♥' }); })); }
     function drawClock() { var t = Math.max(0, Math.ceil(G.t)); clock.textContent = '⏱ ' + Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); tbar.firstChild.style.width = Math.max(0, G.t / P.time * 100) + '%'; var low = G.t <= 10; clock.classList.toggle('low', low); tbar.classList.toggle('low', low); }
     drawHearts(); drawClock();
@@ -400,17 +401,17 @@
     var P = PUZZLES[id];
     var card = h('div', { class: 'pz-ask', role: 'dialog', 'aria-label': 'Play a short game?' });
     function close() { card.remove(); }
-    card.append(h('button', { class: 'pz-x-btn', type: 'button', 'aria-label': 'Close', text: '✕', onclick: function () { close(); store.set(id, 'skipped'); mini(el, id); } }),
+    card.append(h('button', { class: 'pz-x-btn', type: 'button', 'aria-label': 'Close', text: '✕', onclick: function () { close(); visit.set(id, 'skipped'); mini(el, id); } }),
       h('div', { class: 'top' }, [h('span', { class: 'pz-joy', text: '🎮' }), h('div', {}, [h('h3', { text: 'This lab has a 1-minute game!' }), h('p', { text: 'Can you fix the network yourself? Play before you read, or after.' })])]),
       h('div', { class: 'pz-row' }, [h('button', { class: 'pz-btn', type: 'button', text: '▶ Play first', onclick: function () { close(); play(el, id, true, true); scrollTo(el); } }),
-        h('button', { class: 'pz-btn ghost', type: 'button', text: 'After reading', onclick: function () { close(); store.set(id, 'later'); later(el, id); } })]));
+        h('button', { class: 'pz-btn ghost', type: 'button', text: 'After reading', onclick: function () { close(); visit.set(id, 'later'); later(el, id); } })]));
     document.body.append(card);
   }
   function mount(el) {
     var id = el.getAttribute('data-puzzle'); if (!PUZZLES[id]) return;
     if (!el.hasAttribute('data-lab')) return play(el, id, false);
-    var v = store.get(id);
-    if (v === 'later') later(el, id); else if (v) mini(el, id); else setTimeout(function () { ask(el, id); }, REDUCED ? 0 : 900);
+    var v = visit.get(id);
+    if (store.get(id) === 'solved' || v === 'skipped') mini(el, id); else if (v === 'later') later(el, id); else setTimeout(function () { ask(el, id); }, REDUCED ? 0 : 900);
   }
   function init() { addCss(); document.querySelectorAll('[data-puzzle]').forEach(mount); }
   window.PZ = { list: PUZZLES };
