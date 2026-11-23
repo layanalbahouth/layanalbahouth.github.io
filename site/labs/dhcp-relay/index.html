@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The PC that couldn’t get an IP: DHCP across a router | Layan Albahouth</title>
@@ -22,7 +22,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F2F0EC;--ink:#1C1B19;--mute:#6A665E;--line:#D8D3C9;--code:#E8E4DB;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#161513;--ink:#ECE8E0;--mute:#A19C92;--line:#34312B;--code:#22201C;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.7 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:42rem;margin:0 auto;padding:1.2rem 1.25rem 3rem}
@@ -47,11 +48,15 @@ th{font-weight:600;color:var(--mute)}
 .topo{display:block;width:100%;height:auto;margin:1rem 0;border:1px solid var(--line);border-radius:12px;background:#FBFAF7}
 .kick{font:600 .8rem "Source Sans 3",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1.4rem 0 0}
 .wrap-x{overflow-x:auto}
+
+.theme-btn{position:fixed;top:.9rem;right:.9rem;z-index:5;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);border-radius:999px;width:2.4rem;height:2.4rem;cursor:pointer;font-size:1.05rem;line-height:1}
+.theme-btn:hover{border-color:var(--ink)}
 </style>
 </head>
-<body>
+<body><button class="theme-btn" type="button" aria-label="Dark or light mode" title="Dark / Light">◐</button>
 <main>
 <a class="back" href="/">← Layan Albahouth | Systems &amp; Networking</a>
+<div data-puzzle="dhcp" data-lab></div>
 <p class="kick">Lab · Cisco Packet Tracer</p>
 <h1>The PC that couldn’t get an IP: DHCP across a router</h1>
 <p>The DHCP server was on. The address pool was right. The cables were green. And still, every PC came up with an address starting with 169.254. I built this one in Cisco Packet Tracer on purpose, to watch the problem happen and then fix it.</p>
@@ -118,5 +123,5 @@ DNS Server ........ 192.168.20.10</code></pre>
 </main>
 <footer>© Layan Albahouth. Labs and notes are personal and don’t reflect any employer.</footer>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "82c6764ced1f408a948c4f4a306b8b11"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
+<script>(function(){function cur(){var t=document.documentElement.dataset.theme;return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}document.querySelectorAll(".theme-btn").forEach(function(b){b.addEventListener("click",function(){var n=cur()==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}})})})();</script><script src="/puzzles/puzzles.js" defer></script></body>
 </html>
