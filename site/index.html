@@ -97,7 +97,9 @@ h2{font-size:clamp(2.2rem,6vw,3rem)}
 .tbody{padding:1.3rem 1.4rem 1.1rem}
 .meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-bottom:.5rem}
 .cat{font:600 .78rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.stamp{margin-left:auto;font:600 .72rem var(--body);letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:5px;padding:.08rem .45rem;transform:rotate(-4deg)}
+:root{--stamp:#C62A1F}@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--stamp:#FF5B4B}}:root[data-theme=dark]{--stamp:#FF5B4B}
+.stamp{margin-left:auto;font:800 .8rem var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--stamp);border:2.5px solid var(--stamp);outline:1.5px solid var(--stamp);outline-offset:2px;border-radius:6px;padding:.15rem .6rem;transform:rotate(-9deg);opacity:.9;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.2 2.1'/%3E%3C/filter%3E%3Crect width='140' height='60' filter='url(%23n)'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.2 2.1'/%3E%3C/filter%3E%3Crect width='140' height='60' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stamp.hit{animation:stampin .45s cubic-bezier(.2,1.5,.45,1) both}@keyframes stampin{0%{transform:rotate(-9deg) scale(2.4);opacity:0}60%{opacity:.95}100%{transform:rotate(-9deg) scale(1);opacity:.9}}@media (prefers-reduced-motion:reduce){.stamp.hit{animation:none}}
 .ticket h3{font-size:1.65rem;margin-bottom:.35rem}
 .ticket .sum{margin:0;color:var(--mute)}
 details{margin-top:.8rem}
@@ -342,5 +344,5 @@ systems ⇄ networks
 </main>
 <footer class="wrap">© Layan Albahouth · Labs and notes are personal and don’t reflect any employer.</footer>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "82c6764ced1f408a948c4f4a306b8b11"}'></script><!-- End Cloudflare Web Analytics -->
-<script>(function(){function cur(){var t=document.documentElement.dataset.theme;return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}document.querySelectorAll(".theme-btn").forEach(function(b){b.addEventListener("click",function(){var n=cur()==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}})})})();</script></body>
+<script>(function(){function cur(){var t=document.documentElement.dataset.theme;return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}document.querySelectorAll(".theme-btn").forEach(function(b){b.addEventListener("click",function(){var n=cur()==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}})})})();</script><script>(function(){if(!("IntersectionObserver" in window))return;var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("hit");o.unobserve(e.target)}})},{threshold:.9});document.querySelectorAll(".stamp").forEach(function(s){o.observe(s)})})();</script></body>
 </html>
