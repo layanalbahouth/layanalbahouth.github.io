@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /puzzles/t/
 
 Sitemap: https://bylayann.com/sitemap.xml
