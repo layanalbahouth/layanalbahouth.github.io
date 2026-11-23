@@ -36,7 +36,7 @@
 .pz-pkt text{font:800 12px "Source Sans 3",system-ui,sans-serif;fill:#10161D;text-anchor:middle}
 .pz-x{font-size:34px;font-weight:800;fill:var(--bad);text-anchor:middle;opacity:0;pointer-events:none}
 .pz-x.on{opacity:1;animation:pzpop .35s}
-.pz-msg{margin:12px 2px 2px;font-size:18px;font-weight:700;min-height:1.6em;color:var(--gin)}
+.pz-msg{margin:2px 2px 10px;font-size:18px;font-weight:700;min-height:1.6em;color:var(--gin)}
 .pz-msg.ok{color:var(--ok)}.pz-msg.bad{color:#FF8D80}
 .pz-term{background:#070B10;border:1px solid var(--gln);border-radius:12px;padding:10px 14px;font:16px/1.9 ui-monospace,"SF Mono",Menlo,Consolas,monospace;margin-top:8px;color:var(--gin);overflow-x:auto;white-space:nowrap}
 .pz-term .pr{color:var(--gdim)}
@@ -52,6 +52,10 @@
 .pz-clue small{color:var(--gold);font-weight:800;margin-left:6px}
 .pz-clue[aria-pressed=true]{border-color:var(--gold)}
 .pz-clue:disabled{cursor:default}
+.pz-cluebox{animation:pzin .4s}
+.pz-cluebox[hidden]{display:none}
+.pz-cluebox{margin-top:8px}.pz-cluebox [hidden]{display:none}
+.pz-need{border-color:var(--gold);color:var(--gold);animation:pzpop .45s}
 .pz-legend{font-size:15px;color:var(--gdim);margin:8px 4px 0}
 .pz-legend b{color:var(--gin)}
 .pz-link{cursor:pointer}
@@ -161,6 +165,7 @@
     [sw, r, srv].forEach(function (d) { svg.append(d); });
     var x = st('text', { class: 'pz-x', x: X.r - 52, y: Y - 34 }, '✕'); svg.append(x);
     stage.append(svg);
+    api.clues([['Where?', 'Switches pass broadcasts on. Routers don’t.'], ['The fix', 'Use the port facing the PCs (G0/0) and point it at the server: 192.168.20.10.']]);
     var looping = true, layer = s('g'); svg.append(layer);
     function spawn(i) { var p = packet('?'); layer.append(p); var y = PY[i]; return move(p, [[X.pc + 55, y], [X.sw - 40, Y], [X.r - 52, Y]], 520).then(function () { p.remove(); if (!looping) return; burst(svg, X.r - 52, Y); x.classList.remove('on'); x.getBoundingClientRect(); x.classList.add('on'); if (api.live()) SFX.boom(); }); }
     (async function loop() { var i = 0; while (looping && api.alive()) { spawn(i % 3); i++; await wait(560); } layer.remove(); })();
@@ -208,7 +213,7 @@
     var rl = st('text', { class: 'lbl', x: 10, y: 28 }, ''); rl.style.textAnchor = 'start'; rl.style.fill = '#FFC247';
     svg.append(tl, tl2, rl);
     stage.append(svg, h('p', { class: 'pz-legend', html: '' }));
-    stage.lastChild.innerHTML = '💡 Lower first number in [ ] wins &nbsp;·&nbsp; <b>S</b> static · <b>O</b> OSPF · <b>D</b> EIGRP · <b>R</b> RIP · <b>B</b> BGP';
+    stage.lastChild.innerHTML = '<b>S</b> static · <b>O</b> OSPF · <b>D</b> EIGRP · <b>R</b> RIP · <b>B</b> BGP';
     var R = [
       ['192.168.11.0/24', ['S', '1/0'], ['O', '110/2']],
       ['10.20.0.0/16', ['O', '110/20'], ['R', '120/1']],
@@ -216,6 +221,7 @@
       ['10.50.0.0/16', ['B', '20/0'], ['D', '90/2816']],
       ['192.168.30.0/24', ['S', '1/0'], ['B', '200/0']]
     ];
+    api.clues([['Which wins?', 'The first number in [ ] is the distance. Lower means more trusted.']]);
     var speed = [7.5, 6.5, 5.5, 4.8, 4.2], entries = 0;
     function pill(code, net, ad, y) {
       var o = s('g'), g = s('g', { class: 'pz-dev', tabindex: '0', role: 'button', 'aria-label': code + ' route, ' + ad });
@@ -284,36 +290,32 @@
     var last = Date.now();
     stage.append(svg);
     (function f() { if (!api.alive() || !svg.isConnected) return; var t = Date.now(), dt = Math.min(60, t - last) / 1000; last = t; dots.forEach(function (d) { var l = L[d.k], p = l.p, stop = stpOn && l.bad && !done ? .45 : 1; d.t += dt * .5; if (stop < 1) { if (d.t > stop + .35) d.t = 0; } else if (d.t > 1) d.t = 0; var tt = Math.min(d.t, stop); d.c.setAttribute('cx', p[0] + (p[2] - p[0]) * tt); d.c.setAttribute('cy', p[1] + (p[3] - p[1]) * tt); d.c.setAttribute('fill', done ? '#3DDC84' : (stop < 1 && d.t >= stop ? '#FF5C4D' : '#FFC247')); }); if (!REDUCED) setTimeout(f, 33); })();
-    var out = h('div', { class: 'pz-term', text: '> Stuck? A clue costs 10 seconds.' });
-    var clues = [
-      ['📡 OSPF', 'Core# show ip ospf neighbor → all 3 FULL ✓', function () { ['d1', 'd2', 'd3'].forEach(function (k) { L[k].g.classList.add('glow'); }); }],
-      ['📋 Routes', 'Core has no routes to the B1 and B3 VLANs', function () { D[1].g.classList.add('gold'); D[3].g.classList.add('gold'); }],
-      ['🌳 STP', 'B1 and B3 ports blocked: type inconsistent', function () { stpOn = true; }]
-    ];
-    var bar = h('div', { class: 'pz-clues' });
-    clues.forEach(function (c) { var b = h('button', { class: 'pz-clue', type: 'button', 'aria-pressed': 'false' }, [c[0], h('small', { text: '−10s' })]); onTap(b, function () { if (!api.live() || done) return; if (b.getAttribute('aria-pressed') !== 'true') { b.setAttribute('aria-pressed', 'true'); b.lastChild.textContent = '✓'; api.penalty(10); c[2](); } out.textContent = '> ' + c[1]; }); bar.append(b); });
-    stage.append(bar, out);
+    api.clues([
+      ['OSPF', 'Core# show ip ospf neighbor → all 3 FULL ✓', function () { ['d1', 'd2', 'd3'].forEach(function (k) { L[k].g.classList.add('glow'); }); }],
+      ['Routes', 'Core has no routes to the B1 and B3 VLANs', function () { D[1].g.classList.add('gold'); D[3].g.classList.add('gold'); }],
+      ['STP', 'B1 and B3 ports blocked: type inconsistent', function () { stpOn = true; }]
+    ]);
     function win() {
       done = true; api.win(2000, 'Trunk on one end, access on the other, so STP blocked it.');
-      setTimeout(function () { ['a1', 'a3'].forEach(function (k) { L[k].g.classList.remove('found'); L[k].g.classList.add('fixed'); }); faces[1].set(true); faces[3].set(true); SFX.good(); out.textContent = '> switchport mode trunk ✓  All buildings online.'; }, REDUCED ? 0 : 500);
+      setTimeout(function () { ['a1', 'a3'].forEach(function (k) { L[k].g.classList.remove('found'); L[k].g.classList.add('fixed'); }); faces[1].set(true); faces[3].set(true); SFX.good(); }, REDUCED ? 0 : 500);
     }
   }
 
   var PUZZLES = {
     dhcp: { title: 'No address for you', goal: 'Three users have no IP address. Tap the device where their requests die.', time: 60, run: dhcp, lab: '/labs/dhcp-relay/', lesson: 'ip helper-address relays DHCP across the router.' },
-    routes: { title: 'Gatekeeper', goal: 'The router hears 2 routes to the same network but keeps only 1. Tap the one it trusts before they reach the table.', tip: 'The first number in [ ] is its distance. Lower means more trusted.', time: 60, run: routes, lab: '/labs/static-vs-ospf/', lesson: 'Lower administrative distance wins.' },
+    routes: { title: 'Gatekeeper', goal: 'The router hears 2 routes to the same network but keeps only 1. Tap the one it trusts before they reach the table.', time: 60, run: routes, lab: '/labs/static-vs-ospf/', lesson: 'Lower administrative distance wins.' },
     campus: { title: 'Two buildings went dark', goal: 'B1 and B3 lost the network. Tap the 2 broken links.', time: 75, run: campus, lab: '/labs/campus-ospf-bgp/', lesson: 'A trunk/access mismatch makes STP block the port.' }
   };
 
   function play(el, id, onLab, auto) {
     var P = PUZZLES[id]; if (el._g) el._g.alive = false;
-    var G = { t: P.time, hearts: 3, go: false, over: false, alive: true }; el._g = G;
+    var G = { t: P.time, hearts: 3, go: false, over: false, alive: true, el: 0, later: [] }; el._g = G;
     el.className = 'pz'; el.replaceChildren();
     var hearts = h('span', { class: 'pz-hearts', 'aria-label': 'Lives' }), clock = h('span', { class: 'pz-clock' }), tbar = h('div', { class: 'pz-tbar' }, [h('i')]);
     var mute = h('button', { class: 'pz-mute', type: 'button', 'aria-label': 'Sound on or off', text: muted ? '🔇' : '🔊' });
     mute.onclick = function () { muted = !muted; mute.textContent = muted ? '🔇' : '🔊'; store.set('mute', muted ? '1' : '0'); };
-    var stage = h('div', { class: 'pz-stage' }), msg = h('p', { class: 'pz-msg', text: P.goal }), foot = h('div', { class: 'pz-foot' });
-    el.append(h('div', { class: 'pz-head' }, [h('div', {}, [h('p', { class: 'pz-k', text: '🧩 ' + (onLab ? 'Solve it before you read' : 'Network puzzle') }), h('h2', { class: 'pz-t', text: P.title })]), h('div', { class: 'pz-hud' }, [hearts, clock, mute])]), tbar, stage, msg, foot);
+    var clueArea = h('div', { class: 'pz-cluebox', hidden: '' }), stage = h('div', { class: 'pz-stage' }), msg = h('p', { class: 'pz-msg', text: P.goal }), foot = h('div', { class: 'pz-foot' });
+    el.append(h('div', { class: 'pz-head' }, [h('div', {}, [h('p', { class: 'pz-k', text: '🧩 ' + (onLab ? 'Solve it before you read' : 'Network puzzle') }), h('h2', { class: 'pz-t', text: P.title })]), h('div', { class: 'pz-hud' }, [hearts, clock, mute])]), tbar, msg, stage, clueArea, foot);
     if (onLab) foot.append(h('button', { class: 'pz-skip', type: 'button', text: 'Skip, take me to the lab ↓', onclick: function () { G.alive = false; store.set(id, store.get(id) || 'skipped'); mini(el, id); } }));
     function drawHearts() { hearts.replaceChildren.apply(hearts, [0, 1, 2].map(function (i) { return h('b', { class: i < G.hearts ? '' : 'off', text: '♥' }); })); }
     function drawClock() { var t = Math.max(0, Math.ceil(G.t)); clock.textContent = '⏱ ' + Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); tbar.firstChild.style.width = Math.max(0, G.t / P.time * 100) + '%'; var low = G.t <= 10; clock.classList.toggle('low', low); tbar.classList.toggle('low', low); }
@@ -322,7 +324,8 @@
     function ov(kids) { var o = h('div', { class: 'pz-ov' }, kids); stage.append(o); return o; }
     var timer = setInterval(function () {
       if (!G.alive || !el.isConnected) return clearInterval(timer);
-      if (!G.go || G.over) return; var before = Math.ceil(G.t); G.t -= .1; drawClock();
+      if (!G.go || G.over) return; var before = Math.ceil(G.t); G.t -= .1; G.el += .1; drawClock();
+      G.later = G.later.filter(function (x) { if (G.el >= x[0]) { x[1](); return false; } return true; });
       if (Math.ceil(G.t) < before && G.t <= 5 && G.t > 0) SFX.tick();
       if (G.t <= 0) lose('Time’s up!');
     }, 100);
@@ -335,6 +338,15 @@
       live: function () { return G.alive && G.go && !G.over; },
       good: function (t) { SFX.good(); if (t) say(t, 'ok'); },
       miss: function (t, node) { if (node) shake(node); SFX.bad(); stage.classList.remove('hit'); stage.getBoundingClientRect(); stage.classList.add('hit'); G.hearts--; drawHearts(); if (t) say(t, 'bad'); if (G.hearts <= 0) lose('Out of lives!'); },
+      after: function (sec, fn) { G.later.push([sec, fn]); },
+      clues: function (list) {
+        var out = h('div', { class: 'pz-term', text: '> Each clue costs 10 seconds.' }), bar = h('div', { class: 'pz-clues' });
+        list.forEach(function (c) { var b = h('button', { class: 'pz-clue', type: 'button', 'aria-pressed': 'false' }, ['💡 ' + c[0], h('small', { text: '−10s' })]); onTap(b, function () { if (!api.live()) return; if (b.getAttribute('aria-pressed') !== 'true') { b.setAttribute('aria-pressed', 'true'); b.lastChild.textContent = '✓'; api.penalty(10); c[2] && c[2](); } out.textContent = '> ' + c[1]; }); bar.append(b); });
+        var open = h('button', { class: 'pz-clue pz-need', type: 'button', text: '💡 Need a clue?' }), panel = h('div', { hidden: '' }, [bar, out]);
+        onTap(open, function () { if (!api.live()) return; open.remove(); panel.hidden = false; });
+        clueArea.replaceChildren(open, panel);
+        api.after(10, function () { if (G.over) return; clueArea.hidden = false; SFX.go(); });
+      },
       penalty: function (sec) { G.t = Math.max(1, G.t - sec); drawClock(); var f = h('span', { class: 'pz-float', text: '−' + sec + 's' }); el.append(f); setTimeout(function () { f.remove(); }, 950); },
       win: function (delay, t) {
         if (G.over) return; G.over = true; if (t) say(t, 'ok'); var used = Math.round(P.time - G.t), stars = G.hearts;
